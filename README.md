@@ -1,6 +1,8 @@
 
 # Ripples
 
+Demo: https://joe-shenouda.github.io/Ripples/
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/joe-shenouda/Ripples.svg)](https://github.com/joe-shenouda/Ripples/stargazers)
 [![Forks](https://img.shields.io/github/forks/joe-shenouda/Ripples.svg)](https://github.com/joe-shenouda/Ripples/network/members)
