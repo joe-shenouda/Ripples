@@ -17,7 +17,6 @@ Demo: https://joe-shenouda.github.io/Ripples/
   - [Adjusting Ripple Speed and Duration](#adjusting-ripple-speed-and-duration)
   - [Adding More Ripples](#adding-more-ripples)
 - [Screenshots](#screenshots)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
