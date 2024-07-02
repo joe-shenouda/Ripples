@@ -1,7 +1,8 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<base href="https://ripples.gl" />
-<title>ripples.gl - Interactive Swirling GLSL Shader with Multiple Ripples</title>
+<title>Ripples</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
     body, html {
         margin: 0;
@@ -16,10 +17,14 @@
         height: 100%;
         cursor: none;
     }
+    .dg.ac {
+        z-index: 10 !important;
+    }
 </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
 <script id="vertexShader" type="x-shader/x-vertex">
     attribute vec3 position;
     void main() {
@@ -34,16 +39,18 @@
     uniform vec2 u_clicks[10];
     uniform float u_clickTimes[10];
     uniform int u_clickCount;
+    uniform float u_rippleSpeed;
+    uniform vec3 u_color1;
+    uniform vec3 u_color2;
 
     vec3 palette(float t) {
-        return mix(vec3(0.3, 0.1, 0.4), vec3(1.0, 0.8, 0.5), abs(sin(t * 6.28318)));
+        return mix(u_color1, u_color2, abs(sin(t * 6.28318)));
     }
 
     float ripple(vec2 uv, vec2 center, float time) {
         float d = length(uv - center);
         float t = clamp(time, 0.0, 5.0);
-        float rippleSpeed = 0.1;
-        float rippleRadius = t * rippleSpeed;
+        float rippleRadius = t * u_rippleSpeed;
         float wave = sin(max(0.0, d - rippleRadius) * 30.0) * 0.5 + 0.5;
         return wave * smoothstep(rippleRadius + 0.1, rippleRadius, d) * smoothstep(5.0, 0.0, t);
     }
@@ -137,18 +144,29 @@
     const clicksLocation = gl.getUniformLocation(program, 'u_clicks');
     const clickTimesLocation = gl.getUniformLocation(program, 'u_clickTimes');
     const clickCountLocation = gl.getUniformLocation(program, 'u_clickCount');
+    const rippleSpeedLocation = gl.getUniformLocation(program, 'u_rippleSpeed');
+    const color1Location = gl.getUniformLocation(program, 'u_color1');
+    const color2Location = gl.getUniformLocation(program, 'u_color2');
 
     let mouseX = 0, mouseY = 0;
     let clicks = [];
     let clickTimes = [];
+    let rippleSpeed = 0.1;
+    let color1 = [0.3, 0.1, 0.4];
+    let color2 = [1.0, 0.8, 0.5];
+
+    const gui = new dat.GUI();
+    gui.add({ rippleSpeed }, 'rippleSpeed', 0.01, 1.0).onChange(value => rippleSpeed = value);
+    gui.addColor({ color1 }, 'color1').onChange(value => color1 = value);
+    gui.addColor({ color2 }, 'color2').onChange(value => color2 = value);
 
     canvas.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = canvas.height - e.clientY;
+        mouseX = e.clientX * window.devicePixelRatio;
+        mouseY = canvas.height - e.clientY * window.devicePixelRatio;
     });
 
     canvas.addEventListener('click', (e) => {
-        clicks.push([e.clientX, canvas.height - e.clientY]);
+        clicks.push([e.clientX * window.devicePixelRatio, canvas.height - e.clientY * window.devicePixelRatio]);
         clickTimes.push(performance.now() * 0.001);
         if (clicks.length > 10) {
             clicks.shift();
@@ -156,9 +174,21 @@
         }
     });
 
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        for (let i = 0; i < e.touches.length; i++) {
+            clicks.push([e.touches[i].clientX * window.devicePixelRatio, canvas.height - e.touches[i].clientY * window.devicePixelRatio]);
+            clickTimes.push(performance.now() * 0.001);
+        }
+        while (clicks.length > 10) {
+            clicks.shift();
+            clickTimes.shift();
+        }
+    });
+
     function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth * window.devicePixelRatio;
+        canvas.height = window.innerHeight * window.devicePixelRatio;
         gl.viewport(0, 0, canvas.width, canvas.height);
     }
 
@@ -171,6 +201,9 @@
         gl.uniform1f(timeLocation, time);
         gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
         gl.uniform2f(mouseLocation, mouseX, mouseY);
+        gl.uniform1f(rippleSpeedLocation, rippleSpeed);
+        gl.uniform3fv(color1Location, color1);
+        gl.uniform3fv(color2Location, color2);
         
         gl.uniform2fv(clicksLocation, clicks.flat());
         gl.uniform1fv(clickTimesLocation, clickTimes);
