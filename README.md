@@ -1,3 +1,4 @@
+
 # Ripples
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -82,22 +83,11 @@ const maxClicks = 20; // Increase from 10 to 20
 
 ## Screenshots
 
-![Screenshot 1](images/screenshot1.png)
-![Screenshot 2](images/screenshot2.png)
-
-## Roadmap
-
 
 
 ## Contributing
 
-Contributions are welcome! Please follow these steps to contribute:
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/YourFeature`)
-3. Commit your Changes (`git commit -m 'Add some YourFeature'`)
-4. Push to the Branch (`git push origin feature/YourFeature`)
-5. Open a Pull Request
+Contributions are welcome! 
 
 ## License
 
@@ -111,7 +101,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Joe Shenouda - [@joe-shenouda](https://github.com/joe-shenouda) - email@example.com
+Joe Shenouda - [@joe-shenouda](https://github.com/joe-shenouda)
 
 Project Link: [https://github.com/joe-shenouda/Ripples](https://github.com/joe-shenouda/Ripples)
 
